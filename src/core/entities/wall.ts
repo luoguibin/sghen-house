@@ -29,7 +29,7 @@ export default class Wall extends Mesh {
     const shadowTexture = new CanvasTexture(canvas);
 
     // color: 0xaaaaaa, wireframe: false,
-    const material = new MeshBasicMaterial({ map: shadowTexture });
+    const material = new MeshBasicMaterial({ map: shadowTexture, transparent: true, });
     super(geometry, material);
 
     this.material = material;

@@ -328,6 +328,7 @@ class OrbitControls extends EventDispatcher {
 		};
 
 		let state = STATE.NONE;
+		let clickState = true;
 
 		const EPS = 0.000001;
 
@@ -793,6 +794,7 @@ class OrbitControls extends EventDispatcher {
 		function onPointerDown( event ) {
 
 			if ( scope.enabled === false ) return;
+			clickState = true;
 
 			switch ( event.pointerType ) {
 
@@ -952,6 +954,7 @@ class OrbitControls extends EventDispatcher {
 			if ( scope.enabled === false ) return;
 
 			event.preventDefault();
+			clickState = false;
 
 			switch ( state ) {
 
@@ -991,8 +994,12 @@ class OrbitControls extends EventDispatcher {
 			if ( scope.enabled === false ) return;
 
 			handleMouseUp( event );
-
-			scope.dispatchEvent( _endEvent );
+			if (clickState) {
+				scope.dispatchEvent( { type: 'click', event, state } );
+				clickState = false;
+			} else {
+				scope.dispatchEvent( _endEvent );
+			}
 
 			state = STATE.NONE;
 
