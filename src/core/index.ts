@@ -1,6 +1,6 @@
 import {
   Scene, WebGLRenderer, OrthographicCamera,
-  AxesHelper, GridHelper,
+  AxesHelper, GridHelper, Object3D,
 } from "three";
 import { OrbitControls } from './orbitcontrols';
 
@@ -70,5 +70,9 @@ export default class SgHouse {
     })
 
     this.renderer.render(this.scene, this.camera);
+  }
+
+  addEntity(...obj: Object3D[]) {
+    this.scene.add(...obj);
   }
 }
