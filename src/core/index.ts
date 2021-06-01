@@ -25,7 +25,7 @@ export default class SgHouse {
     container.appendChild(renderer.domElement);
     this.renderer = renderer;
 
-    const aspect = clientWidth / clientHeight;
+    const aspect = 1; // clientWidth / clientHeight;
     const camera = new OrthographicCamera(-aspect, aspect, 1, -1, 0.01, 10);
     camera.lookAt(0, 0, 0);
     camera.position.set(0, 0, 5);
