@@ -101,6 +101,8 @@ export default defineComponent({
           }))
         });
       })
+      // this.onOpenEntity('wall')
+      // this.onAddEntity()
     },
 
     onOpenEntity(key) {

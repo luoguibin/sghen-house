@@ -17,9 +17,9 @@ export default class Wall extends Mesh implements IMesh {
       width,
       height,
       depth,
-      Math.floor(Math.max(width, 1)),
-      Math.floor(Math.max(height, 1)),
-      Math.floor(Math.max(depth, 1)),
+      Math.max(width, 0.1) / 0.1,
+      Math.max(height, 0.1) / 0.1,
+      Math.max(depth, 0.1) / 0.1,
     );
 
     const img = new Image(256, 256);
@@ -29,10 +29,11 @@ export default class Wall extends Mesh implements IMesh {
       img.src = imgSrc02;
     }
     const shadowTexture = new CanvasTexture(img, undefined, RepeatWrapping, RepeatWrapping);
-    shadowTexture.repeat.set(width / 1.5, height / 1.5);
+    // 砖头长240mm
+    shadowTexture.repeat.set(width / 0.95, height / 0.95);
 
     // color: 0xaaaaaa, wireframe: false,
-    const material = new MeshBasicMaterial({ map: shadowTexture, transparent: true });
+    const material = new MeshBasicMaterial({ map: shadowTexture, transparent: false, wireframe: false });
     super(geometry, material);
 
     this.material = material;
