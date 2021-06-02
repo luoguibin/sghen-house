@@ -1,0 +1,82 @@
+[
+    {
+        "width": "12",
+        "height": "15",
+        "depth": "0.2",
+        "wallType": 5,
+        "position": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+        },
+        "rotation": {
+            "x": 1.5707963267948966,
+            "y": 0,
+            "z": 0
+        }
+    },
+    {
+        "width": "12",
+        "height": "3",
+        "depth": "0.1",
+        "wallType": 0,
+        "position": {
+            "x": 0,
+            "y": 1.4,
+            "z": -7.55
+        },
+        "rotation": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+        }
+    },
+    {
+        "width": "12",
+        "height": "3",
+        "depth": "0.1",
+        "wallType": 0,
+        "position": {
+            "x": 0,
+            "y": 1.4,
+            "z": 7.55
+        },
+        "rotation": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+        }
+    },
+    {
+        "width": "15.2",
+        "height": 3,
+        "depth": 0.1,
+        "wallType": 0,
+        "position": {
+            "x": 6.05,
+            "y": 1.4,
+            "z": 0
+        },
+        "rotation": {
+            "x": 0,
+            "y": 1.5707963267948966,
+            "z": 0
+        }
+    },
+    {
+        "width": "15.2",
+        "height": 3,
+        "depth": 0.1,
+        "wallType": 0,
+        "position": {
+            "x": -6.05,
+            "y": 1.4,
+            "z": 0
+        },
+        "rotation": {
+            "x": 0,
+            "y": 1.5707963267948966,
+            "z": 0
+        }
+    }
+]

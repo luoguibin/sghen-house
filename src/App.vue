@@ -9,6 +9,8 @@
       >
         {{ item.label }}
       </button>
+
+      <button @click="onRemoveEntity">remove</button>
     </div>
     <div class="unit-panel">
       <span>平移</span>
@@ -88,6 +90,17 @@ export default defineComponent({
     init() {
       this.sgHouse = new SgHouse(this.$refs.container);
       window.sgHouse = this.sgHouse;
+
+      import('@/assets/data/default.json').then(e => {
+        const list = e.default || e;
+        list.forEach(o => {
+          this.sgHouse.addEntity(new Wall(o.width, o.height, o.depth, {
+            position: o.position,
+            rotation: o.rotation,
+            wallType: o.wallType,
+          }))
+        });
+      })
     },
 
     onOpenEntity(key) {
@@ -103,6 +116,9 @@ export default defineComponent({
           break;
       }
       this.entityKey = "";
+    },
+    onRemoveEntity() {
+      this.sgHouse.removeEntity()
     },
     onAddUnit(key, ratio) {
       this.sgHouse.addUnit(key, this.unit * ratio);

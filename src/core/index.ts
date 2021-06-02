@@ -31,9 +31,9 @@ export default class SgHouse {
     this.renderer = renderer;
 
     this.scene = new Scene();
-    const aspect = 1; // clientWidth / clientHeight;
+    const aspect = clientWidth / clientHeight;
     // const camera = new OrthographicCamera(-aspect, aspect, 1, -1, 0.01, 10);
-    const camera = new PerspectiveCamera(50, 1, aspect, 1000)
+    const camera = new PerspectiveCamera(50, aspect, 1, 1000)
     camera.position.set(0, 0, 15);
     camera.lookAt(this.scene.position);
     this.camera = camera;
@@ -94,6 +94,12 @@ export default class SgHouse {
     this.renderer.render(this.scene, this.camera);
   }
 
+  removeEntity() {
+    if (this.currentObject) {
+      this.scene.remove(this.currentObject)
+      this.currentObject = undefined
+    }
+  }
   addEntity(...obj: Object3D[]) {
     this.scene.add(...obj);
   }
@@ -145,13 +151,24 @@ export default class SgHouse {
       this.currentObject.setOpacity(1);
     }
     const list = intersects.filter(function (o) {
-      return o && o.object;
+      return o && o.object && o.object.userData.isEntity;
     })
+
     if (list.length) {
       this.currentObject = list[0].object;
       if (this.currentObject instanceof Wall) {
         this.currentObject.setOpacity(0.8);
       }
     }
+  }
+
+  getData() {
+    const list: Object[] = []
+    this.scene.children.forEach(o => {
+      if (o instanceof Wall) {
+        list.push(o.getData())
+      }
+    })
+    return list
   }
 }
