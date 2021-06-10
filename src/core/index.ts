@@ -17,6 +17,11 @@ export default class SgHouse {
   rayPointer: Vector2 = new Vector2();
   currentObject: Object3D | undefined;
 
+  clickCalls: Function[] = [];
+
+  xyzUnit: number = 1;
+  rotationUnit: number = 5;
+
   /**
    * @param container 画布容器
    */
@@ -33,7 +38,7 @@ export default class SgHouse {
     this.scene = new Scene();
     const aspect = clientWidth / clientHeight;
     // const camera = new OrthographicCamera(-aspect, aspect, 1, -1, 0.01, 10);
-    const camera = new PerspectiveCamera(50, aspect, 1, 1000)
+    const camera = new PerspectiveCamera(50, aspect, 0.1, 100)
     camera.position.set(0, 0, 15);
     camera.lookAt(this.scene.position);
     this.camera = camera;
@@ -56,6 +61,31 @@ export default class SgHouse {
           this.click();
           break;
 
+        default:
+          break;
+      }
+    })
+
+
+    window.addEventListener('keydown', e => {
+      console.log(e.code);
+
+      switch (e.code) {
+        case "ArrowDown":
+          this.addUnit('z', this.xyzUnit)
+          break;
+        case "ArrowUp":
+          this.addUnit('z', -1 * this.xyzUnit)
+          break;
+        case "ArrowRight":
+          this.addUnit('x', this.xyzUnit)
+          break;
+        case "ArrowLeft":
+          this.addUnit('x', -1 * this.xyzUnit)
+          break;
+        case "Delete":
+          this.removeEntity();
+          break;
         default:
           break;
       }
@@ -102,6 +132,10 @@ export default class SgHouse {
   }
   addEntity(...obj: Object3D[]) {
     this.scene.add(...obj);
+  }
+  setUnits(xyzUnit: number, rotationUnit: number) {
+    this.xyzUnit = xyzUnit
+    this.rotationUnit = rotationUnit
   }
   addUnit(key: string, v: number) {
     const { position } = this.currentObject || {}
@@ -153,13 +187,20 @@ export default class SgHouse {
     const list = intersects.filter(function (o) {
       return o && o.object && o.object.userData.isEntity;
     })
-
+    this.currentObject = undefined
     if (list.length) {
       this.currentObject = list[0].object;
       if (this.currentObject instanceof Wall) {
         this.currentObject.setOpacity(0.8);
       }
     }
+    this.clickCalls.forEach(call => {
+      call(this.currentObject)
+    })
+  }
+
+  addClickCall(call: Function) {
+    this.clickCalls.push(call)
   }
 
   getData() {
@@ -170,5 +211,15 @@ export default class SgHouse {
       }
     })
     return list
+  }
+  downloadJson() {
+    const list = this.getData()
+    const blob = new Blob([JSON.stringify(list)])
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement('A')
+    a.setAttribute('download', 'default.json')
+    a.setAttribute('href', url)
+    a.click()
+    URL.revokeObjectURL(url)
   }
 }

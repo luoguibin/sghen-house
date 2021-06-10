@@ -11,6 +11,8 @@
       </button>
 
       <button @click="onRemoveEntity">remove</button>
+      <button @click="onCopyEntity">copy</button>
+      <button @click="onDdownload">download</button>
     </div>
     <div class="unit-panel">
       <span>平移</span>
@@ -49,10 +51,22 @@
       <div><span>width</span><input v-model="width" /></div>
       <div><span>height</span><input v-model="height" /></div>
       <div><span>depth</span><input v-model="depth" /></div>
+      <div><span>wallType</span><input v-model="wallType" /></div>
       <div>
         <button @click="onAddEntity">ok</button>
         <button @click="entityKey = ''">no</button>
       </div>
+    </div>
+
+    <div v-if="objectParameters" style="width: 180px; color: white">
+      <div>width:{{ objectParameters.parameters.width }}</div>
+      <div>height:{{ objectParameters.parameters.height }}</div>
+      <div>depth:{{ objectParameters.parameters.depth }}</div>
+
+      <div>wallType:{{ objectParameters.wallType }}</div>
+      <div>x:{{ objectParameters.position.x }}</div>
+      <div>y:{{ objectParameters.position.y }}</div>
+      <div>z:{{ objectParameters.position.z }}</div>
     </div>
   </div>
 </template>
@@ -69,16 +83,31 @@ export default defineComponent({
 
   setup() {
     const entities = ref([{ key: "wall", label: "wall" }]);
+    const unit = ref(1);
+    const rotation = ref(5);
+
     return {
       entities,
-      unit: ref(1),
-      rotation: ref(5),
+      unit,
+      rotation,
       entityKey: ref(""),
 
       width: ref(4),
       height: ref(3),
       depth: ref(0.1),
+      wallType: ref(0),
+
+      objectParameters: ref(null),
     };
+  },
+
+  watch: {
+    unit() {
+      this.setUnits();
+    },
+    rotation() {
+      this.setUnits();
+    },
   },
 
   mounted() {
@@ -87,21 +116,34 @@ export default defineComponent({
   },
 
   methods: {
+    setUnits() {
+      this.sgHouse.setUnits(+this.unit, +this.rotation);
+    },
     init() {
       this.sgHouse = new SgHouse(this.$refs.container);
+      this.sgHouse.addClickCall((object) => {
+        this.objectParameters = object?.getData();
+      });
       window.sgHouse = this.sgHouse;
 
-      import('@/assets/data/default.json').then(e => {
+      import("@/assets/data/default.json").then((e) => {
         const list = e.default || e;
-        list.forEach(o => {
-          this.sgHouse.addEntity(new Wall(o.width, o.height, o.depth, {
-            position: o.position,
-            rotation: o.rotation,
-            wallType: o.wallType,
-          }))
+        list.forEach((o) => {
+          const parameters = o.parameters;
+          this.sgHouse.addEntity(
+            new Wall(parameters.width, parameters.height, parameters.depth, {
+              position: o.position,
+              rotation: o.rotation,
+              wallType: o.wallType,
+            })
+          );
         });
-      })
+      });
+
       // this.onOpenEntity('wall')
+      // this.width = 1;
+      // this.height = 1;
+      // this.depth = 1;
       // this.onAddEntity()
     },
 
@@ -111,7 +153,9 @@ export default defineComponent({
     onAddEntity() {
       switch (this.entityKey) {
         case "wall":
-          this.sgHouse.addEntity(new Wall(this.width, this.height, this.depth));
+          this.sgHouse.addEntity(
+            new Wall(this.width, this.height, this.depth, this.wallType)
+          );
           break;
 
         default:
@@ -120,7 +164,24 @@ export default defineComponent({
       this.entityKey = "";
     },
     onRemoveEntity() {
-      this.sgHouse.removeEntity()
+      this.sgHouse.removeEntity();
+    },
+    onCopyEntity() {
+      const o = this.objectParameters;
+      if (!o) {
+        return;
+      }
+      const parameters = o.parameters;
+      this.sgHouse.addEntity(
+        new Wall(parameters.width, parameters.height, parameters.depth, {
+          position: o.position,
+          rotation: o.rotation,
+          wallType: o.wallType,
+        })
+      );
+    },
+    onDdownload() {
+      this.sgHouse.downloadJson();
     },
     onAddUnit(key, ratio) {
       this.sgHouse.addUnit(key, this.unit * ratio);
