@@ -154,7 +154,9 @@ export default defineComponent({
       switch (this.entityKey) {
         case "wall":
           this.sgHouse.addEntity(
-            new Wall(this.width, this.height, this.depth, this.wallType)
+            new Wall(this.width, this.height, this.depth, {
+              wallType: this.wallType,
+            })
           );
           break;
 

@@ -16,7 +16,7 @@ export default class Wall extends Mesh {
     // geometry.addAttribute('uv')
 
     const textureLoader = new TextureLoader()
-    const texture = textureLoader.load(options.wallType === 5 ? imgSrc05 : imgSrc02)
+    const texture = textureLoader.load(options.wallType == 5 ? imgSrc05 : imgSrc02)
     texture.repeat.set(width, height);
     texture.wrapS = RepeatWrapping
     texture.wrapT = RepeatWrapping
