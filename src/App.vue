@@ -59,14 +59,18 @@
     </div>
 
     <div v-if="objectParameters" style="width: 180px; color: white">
-      <div>width:{{ objectParameters.parameters.width }}</div>
-      <div>height:{{ objectParameters.parameters.height }}</div>
-      <div>depth:{{ objectParameters.parameters.depth }}</div>
+      <template v-if="objectParameters.parameters">
+        <div>width:{{ objectParameters.parameters.width }}</div>
+        <div>height:{{ objectParameters.parameters.height }}</div>
+        <div>depth:{{ objectParameters.parameters.depth }}</div>
+      </template>
 
       <div>wallType:{{ objectParameters.wallType }}</div>
-      <div>x:{{ objectParameters.position.x }}</div>
-      <div>y:{{ objectParameters.position.y }}</div>
-      <div>z:{{ objectParameters.position.z }}</div>
+      <template v-if="objectParameters.position">
+        <div>x:{{ objectParameters.position.x }}</div>
+        <div>y:{{ objectParameters.position.y }}</div>
+        <div>z:{{ objectParameters.position.z }}</div>
+      </template>
     </div>
   </div>
 </template>
@@ -122,11 +126,27 @@ export default defineComponent({
     init() {
       this.sgHouse = new SgHouse(this.$refs.container);
       this.sgHouse.addClickCall((object) => {
+        if (object) {
+          const oData = object.getData();
+          this.width = oData.parameters.width;
+          this.height = oData.parameters.height;
+          this.depth = oData.parameters.depth;
+          this.wallType = oData.wallType;
+        }
         this.objectParameters = object?.getData();
       });
       window.sgHouse = this.sgHouse;
 
-      import("@/assets/data/default.json").then((e) => {
+      const query = {};
+      location.search
+        .substring(1)
+        .split("&")
+        .forEach((v) => {
+          const [key, value] = v.split("=");
+          query[key] = value;
+        });
+      const name = query.dataName || "default";
+      import(`./assets/data/${name}.json`).then((e) => {
         const list = e.default || e;
         list.forEach((o) => {
           const parameters = o.parameters;
@@ -173,14 +193,16 @@ export default defineComponent({
       if (!o) {
         return;
       }
-      const parameters = o.parameters;
-      this.sgHouse.addEntity(
-        new Wall(parameters.width, parameters.height, parameters.depth, {
-          position: o.position,
-          rotation: o.rotation,
-          wallType: o.wallType,
-        })
-      );
+      const pos = { x: o.position.x, y: o.position.y, z: o.position.z };
+      pos.x = pos.x + 1;
+      pos.z = pos.z + 1;
+      const entity = new Wall(this.width, this.height, this.depth, {
+        position: pos,
+        rotation: o.rotation,
+        wallType: o.wallType,
+      });
+      this.sgHouse.addEntity(entity);
+      // this.sgHouse.testCopyEntity(entity);
     },
     onDdownload() {
       this.sgHouse.downloadJson();

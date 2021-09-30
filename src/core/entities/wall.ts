@@ -39,8 +39,9 @@ export default class Wall extends Mesh {
   }
 
   getData(): Object {
+    const anyObj: any = this.geometry
     return {
-      parameters: this.geometry.parameters,
+      parameters: anyObj.parameters,
       wallType: this.wallType,
       position: this.position,
       rotation: this.rotation.toVector3(),

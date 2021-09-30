@@ -4,6 +4,7 @@
   "scripts": {
     "dev": "vite",
     "build": "vue-tsc --noEmit && vite build",
+    "build0": "vite build",
     "serve": "vite preview"
   },
   "dependencies": {
@@ -14,6 +15,7 @@
     "vue": "^3.0.5"
   },
   "devDependencies": {
+    "@rollup/plugin-dynamic-import-vars": "^1.4.0",
     "@types/node": "^15.6.1",
     "@types/three": "^0.128.0",
     "@vitejs/plugin-vue": "^1.2.2",

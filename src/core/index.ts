@@ -177,6 +177,12 @@ export default class SgHouse {
         break;
     }
   }
+  testCopyEntity(o: Object3D) {
+    if (this.currentObject) {
+      o.position.copy(this.currentObject.position);
+      o.rotation.copy(this.currentObject.rotation);
+    }
+  }
 
   click() {
     this.raycaster.setFromCamera(this.rayPointer, this.camera);
